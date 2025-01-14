@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import Banner from '../components/Banner';
 import Filters from '../components/Filters';
 import Cardlist from '../components/Cardlist';
@@ -7,10 +7,10 @@ import Footer from '../components/Footer';
 
 const HomePage = () => {
   const [selectedFilter, setSelectedFilter] = useState(0);
-  const [searchQuery, setSearchQuery] = useState(''); // Search query state
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = query => {
-    setSearchQuery(query); // Update search query
+    setSearchQuery(query); 
   };
   return (
     <>

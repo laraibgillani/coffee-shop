@@ -1,56 +1,130 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+// import BottomTab from '../components/BottomTabs';
+import {useNavigation} from '@react-navigation/native';
+import { useFavourites } from '../components/FavouriteProvides';
 
-const Favorites = () => {
-  const route = useRoute();
-  const {item} = route.params || {};
-  const navigation=useNavigation()
+const Favourites = () => {
+  const navigation = useNavigation();
+  const {favourites} = useFavourites();
+
+  const renderItem = ({item}: any) => (
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => navigation.navigate('DetailScreen', {item})}>
+      <Image source={item.image} style={styles.image} />
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.price}>${item.price}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <View>
-      <View style={styles.headrView}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home', {item})}>
-          <Image
-            source={require('../assets/icons/back.png')}
-            style={styles.img}
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.head}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Image source={require('../assets/icons/back.png')} style={styles.back} />
+          </TouchableOpacity>
+          <Text style={styles.header}>Favourites</Text>
+        </View>
+        {favourites.length > 0 ? (
+          <FlatList
+            data={favourites}
+            renderItem={renderItem}
+            keyExtractor={(item, index) =>
+              item.id ? item.id.toString() : index.toString()
+            }
+            contentContainerStyle={styles.listWrapper}
           />
-        </TouchableOpacity>
-        <Text style={styles.text}>Favorites</Text>
-        <Image
-          source={require('../assets/icons/heart.png')}
-          style={styles.img}
-        />
+        ) : (
+          <View style={styles.noDataWrapper}>
+            <Text style={styles.noDataText}>No favourites yet!</Text>
+          </View>
+        )}
       </View>
-      <View style={{ justifyContent: 'center', alignItems: 'center', top:300}}>
-      <Text style={styles.content}>Here is Favorites screen</Text>
-      </View>
-    </View>
+      {/* <BottomTab /> */}
+    </SafeAreaView>
   );
 };
 
-export default Favorites;
-
 const styles = StyleSheet.create({
-  headrView: {
-    display: 'flex',
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: 20,
+    paddingHorizontal: 10,
+  },
+  head: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 15,
-    marginVertical: 30,
+    alignItems: 'center',
+    paddingVertical: 20,
+    width: '60%',
   },
-  text: {
-    fontSize: 20,
+  header: {
+    fontSize: 24,
     fontWeight: 'bold',
-    width: '22%',
+    textAlign: 'center',
+    right: -15,
   },
-  img: {
-    width: 30,
-    height: 30,
+  back: {
+    width: 35,
+    height: 35,
   },
-  content:{
-    fontSize: 20,
-    fontWeight: 'bold',
+  listWrapper: {
+    paddingBottom: 20,
+  },
+  noDataWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: '#888',
+  },
+  card: {
+    backgroundColor: '#E3E3E3',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 20,
+    marginHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  image: {
     width: '100%',
-    paddingHorizontal:90
-  }
-})
+    height: 180,
+    borderRadius: 10,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  price: {
+    fontSize: 14,
+    color: '#783D06',
+  },
+});
+
+export default Favourites;

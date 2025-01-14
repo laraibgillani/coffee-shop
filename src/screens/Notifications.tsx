@@ -1,56 +1,125 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  Image,
+} from 'react-native';
+import { useNotifications } from '../components/NotificationProvider';
 
 const Notifications = () => {
-  const route = useRoute();
-  const {item} = route.params || {};
-  const navigation = useNavigation();
-  return (
-    <View>
-    <View style={styles.headrView}>
-      <TouchableOpacity onPress={() => navigation.navigate('Home', {item})}>
+  const {notifications} = useNotifications();
+  // const {notifications, removeNotification} = useNotifications();
+
+  const renderNotification = ({item}) => (
+    <View style={styles.notificationCard}>
+      <View style={styles.headerView}>
+        <View>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.body}>{item.body}</Text>
+        </View>
         <Image
-          source={require('../assets/icons/back.png')}
-          style={styles.img}
+          style={styles.image}
+          source={require('../assets/icons/filledBell.png')}
         />
-      </TouchableOpacity>
-      <Text style={styles.text}>Notifications</Text>
-      <Image
-        source={require('../assets/icons/bell.png')}
-        style={styles.img}
-      />
+      </View>
+      <Text style={styles.timestamp}>
+        {new Date(item.timestamp).toLocaleString()}
+      </Text>
+      {/* <TouchableOpacity
+      style={styles.deleteButton}
+      onPress={() => removeNotification(item.timestamp)}
+    >
+      <Image style={styles.image} source={require('../assets/close.png')}/>
+    </TouchableOpacity> */}
     </View>
-    <View style={{ justifyContent: 'center', alignItems: 'center', top:300}}>
-    <Text style={styles.content}>Notifications screen</Text>
-    </View>
-  </View>
+  );
+
+  return (
+    <>
+      <View style={styles.container}>
+        <Text style={styles.header}>Notifications</Text>
+        {notifications.length === 0 ? (
+          <Text style={styles.placeholder}>No notifications yet!</Text>
+        ) : (
+          <FlatList
+            data={notifications}
+            renderItem={renderNotification}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        )}
+      </View>
+    </>
   );
 };
 
-export default Notifications;
-
 const styles = StyleSheet.create({
-  headrView: {
-    display: 'flex',
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 20,
+    paddingTop: 30,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingBottom: 10,
+  },
+  placeholder: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  notificationCard: {
+    padding: 12,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 0.1,
+    marginHorizontal: 10,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+    marginTop: 10,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  body: {
+    fontSize: 14,
+    color: '#919191',
+    marginVertical: 4,
+  },
+  timestamp: {
+    fontSize: 12,
+    color: 'black',
+    textAlign: 'right',
+  },
+  headerView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 15,
-    marginVertical: 30,
+    alignItems: 'center',
   },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    width: '34%',
+  image: {
+    width: 20,
+    height: 20,
   },
-  img: {
-    width: 30,
-    height: 30,
-  },
-  content:{
-    fontSize: 20,
-    fontWeight: 'bold',
-    width: '100%',
-    paddingHorizontal:90
-  }
-})
+  // deleteButton: {
+  //   backgroundColor: "#C67C4E",
+  //   borderRadius: 20,
+  //   position: "absolute",
+  //   right: -6,
+  //   top: -6,
+  // },
+});
+
+export default Notifications;

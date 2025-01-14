@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {
   Image,
@@ -8,7 +9,8 @@ import {
   View,
 } from 'react-native';
 
-const Banner = ({ onSearch }) => {
+const Banner = ({onSearch}) => {
+    const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.logo}>
@@ -29,9 +31,12 @@ const Banner = ({ onSearch }) => {
               alignSelf: 'center',
             }}
           />
-          <TextInput placeholder="Search Coffee" onChangeText={(text) => onSearch(text)}/>
+          <TextInput
+            placeholder="Search Coffee"
+            onChangeText={text => onSearch(text)}
+          />
         </View>
-        <TouchableOpacity style={styles.btnStyle}>
+        <TouchableOpacity style={styles.btnStyle} onPress={() => navigation.navigate("settings")}>
           <Image
             source={require('../assets/icons/icons8-slider-48.png')}
             style={{width: 30, height: 30}}
@@ -80,7 +85,8 @@ const styles = StyleSheet.create({
   },
   view: {
     flexDirection: 'row',
-    margin: 20,
+    marginHorizontal:30,
+    marginVertical:20,
     gap: 10,
     marginTop: 50,
   },
@@ -90,7 +96,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
     flexDirection: 'row',
-    width: '85%',
+    width: '82%',
   },
   textInput: {
     padding: 10,
@@ -115,11 +121,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   proView: {
-    position:'absolute',
+    position: 'absolute',
     backgroundColor: '#783D06',
     borderRadius: 8,
     alignItems: 'center',
-    margin:10
+    margin: 10,
   },
   proText: {
     padding: 8,
@@ -128,14 +134,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   promoView: {
-    position:'absolute',
+    position: 'absolute',
     backgroundColor: '#C67C4E',
     borderRadius: 8,
     alignItems: 'center',
-    top:'30%',
-    margin:10,
-    width:'50%',
-    padding:10,
+    top: '30%',
+    margin: 10,
+    width: '50%',
+    padding: 10,
   },
   promoText: {
     padding: 8,
